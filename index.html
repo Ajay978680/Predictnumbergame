@@ -1,32 +1,76 @@
-<link rel="stylesheet" href="style.css">
-<h1>Guess the number</h1>
-<input id="one">
-<button onclick="check()">Check</button>
-<p id="result">You are wrong/Right</p>
-<p id="Score">Score:10</p>
-<script>
-    
-    var guessnumber=document.getElementById("one")
-    var result=document.getElementById("result")
-    var a=Math.floor(Math.random()*10) +1
-    var score=document.getElementById("Score")
-    var totalscore=10
-    function check()
-    {
-        var enterednumber=parseInt(guessnumber.value)
-        if(a===enterednumber)
-    {
-        totalscore=totalscore+1
-        score.textContent="Score"+totalscore
-        result.textContent="you are right"
-        alert("Wow!!!")
-    }
-    else{
-        totalscore=totalscore-1
-        score.textContent="Score:"+totalscore
-        result.textContent="You are wrong"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Guess the Number</h1>
+    <p>Guess a number between 1 and 20</p>
+    <input id="guessInput" type="number" min="1" max="20">
+    <button onclick="check()">Check</button>
+    <p id="result">Start guessing!</p>
+    <p id="score">Score: 10</p>
+    <p id="highscore">Highscore: 0</p>
+    <button onclick="newGame()">New Game</button>
+
+    <script>
+        var guessInput = document.getElementById("guessInput");
+        var result = document.getElementById("result");
+        var scoreElement = document.getElementById("score");
+        var highscoreElement = document.getElementById("highscore");
         
-    }
-    }
-</script>
-   
+        var secretNumber;
+        var totalScore;
+        var highscore = 0;
+
+        function newGame() {
+            secretNumber = Math.floor(Math.random() * 20) + 1;
+            totalScore = 10;
+            updateScore();
+            result.textContent = "Start guessing!";
+            guessInput.value = "";
+            guessInput.disabled = false;
+        }
+
+        function check() {
+            var enteredNumber = parseInt(guessInput.value);
+            
+            if (isNaN(enteredNumber) || enteredNumber < 1 || enteredNumber > 20) {
+                result.textContent = "Please enter a valid number between 1 and 20";
+                return;
+            }
+
+            if (secretNumber === enteredNumber) {
+                totalScore++;
+                updateScore();
+                result.textContent = "You are right! The number was " + secretNumber;
+                if (totalScore > highscore) {
+                    highscore = totalScore;
+                    highscoreElement.textContent = "Highscore: " + highscore;
+                }
+                guessInput.disabled = true;
+                alert("Congratulations! You guessed it!");
+            } else {
+                totalScore--;
+                updateScore();
+                result.textContent = enteredNumber > secretNumber ? "Too high! Try again." : "Too low! Try again.";
+                
+                if (totalScore <= 0) {
+                    result.textContent = "Game over! The number was " + secretNumber;
+                    guessInput.disabled = true;
+                }
+            }
+        }
+
+        function updateScore() {
+            scoreElement.textContent = "Score: " + totalScore;
+        }
+
+        // Initialize the game
+        newGame();
+    </script>
+</body>
+</html>
